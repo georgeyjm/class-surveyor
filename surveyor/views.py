@@ -14,4 +14,4 @@ from surveyor.helper import *
 
 @app.route('/')
 def index_page():
-    return 'Test Commit'
+    return 'Final Test Commit'
