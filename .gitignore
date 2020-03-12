@@ -1,3 +1,9 @@
-instance
+# Python
 __pycache__
 *.pyc
+
+# Deployment-Related
+instance
+venv
+*.ini
+*.sock
