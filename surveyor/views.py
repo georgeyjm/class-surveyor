@@ -10,3 +10,8 @@ from werkzeug.security import generate_password_hash
 from surveyor import app, db, login_manager
 from surveyor.models import *
 from surveyor.helper import *
+
+
+@app.route('/')
+def index_page():
+    return 'Hello'
