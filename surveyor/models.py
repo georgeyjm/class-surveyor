@@ -43,6 +43,10 @@ class User(UserMixin, db.Model):
     def __repr__(self):
         return '<User {}>'.format(self.name)
 
+    def authenticate(self, password):
+        '''Checks if provided password matches stored password.'''
+        return check_password_hash(self.password, password)
+
 
 class Feedback(db.Model):
     '''Model for the feedbacks table.'''
