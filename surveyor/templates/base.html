@@ -22,9 +22,12 @@
 
   <nav class='navbar navbar-fixed-top navbar-light bg-light justify-content-between'>
     <div class='container'>
-      <span class='navbar-brand mb-0 h1'>Class Surveyor</span>
-      <!-- <p> g.user['username'] </p> -->
-      <span>Login</span>
+      <a class='navbar-brand mb-0 h1' href='/'>Class Surveyor</a>
+      {% if current_user.is_authenticated %}
+        <a>{{ current_user.name }}</a>
+      {% else %}
+        <a href='/login'>Login</a>
+      {% endif %}
     </div>
   </nav>
 
