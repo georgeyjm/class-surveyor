@@ -25,6 +25,12 @@ def login_page():
     return render_template('login.html')
 
 
+@app.route('/logout')
+def logout_page():
+    logout_user()
+    return redirect(url_for('login_page'))
+
+
 
 #################### APIs ####################
 
