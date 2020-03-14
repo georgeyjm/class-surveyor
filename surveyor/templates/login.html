@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}Login{% endblock %}
+
+{% block styles %}
+  {{ super() }}
+  <link rel='stylesheet' href='{{ url_for("static", filename="styles/login.css") }}'>
+{% endblock %}
+{% block scripts %}
+  {{ super() }}
+{% endblock %}
+
+{% block body %}
+  <div id='form-container'>
+    <h1 class='text-center mb-4'>Login</h1>
+    <form action='' method='POST' autocomplete='off'>
+      <div class='col-lg-4 offset-lg-4 col-md-6 offset-md-3 col-sm-10 offset-sm-1'>
+        <div class='form-group'>
+          <label for='username-input'>Username</label>
+          <input type='text' class='form-control' id='username-input' name='username' spellcheck='false' aria-describedby='username-help' placeholder=''>
+          <small id='username-help' class='form-text text-muted'>Use your school&rsquo;s user ID.</small>
+        </div>
+        <div class='form-group'>
+          <label for='password-input'>Password</label>
+          <input type='password' class='form-control' id='password-input' name='password' placeholder=''>
+        </div>
+      </div>
+      <div class='text-center mt-4'>
+        <button type='submit' class='btn btn-primary'>Login</button>
+      </div>
+    </form>
+    <p class='text-danger text-center mt-2'>{{ login_msg }}</p>
+  </div>
+{% endblock %}

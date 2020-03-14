@@ -4,14 +4,125 @@ import traceback
 from functools import wraps
 
 from flask import Response, request, render_template, redirect, url_for, jsonify
-from flask_login import login_user, logout_user, current_user
+from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.security import generate_password_hash
 
-from surveyor import app, db, login_manager
-from surveyor.models import *
-from surveyor.helper import *
+from . import app, db, login_manager
+from .models import *
+from .helper import *
 
+
+
+#################### Web Pages ####################
 
 @app.route('/')
 def index_page():
-    return 'Final Final Test Commit'
+    if current_user.is_authenticated:
+        return redirect(url_for('dashboard_page'))
+    else:
+        return redirect(url_for('login_page'))
+
+
+@app.route('/login')
+def login_page():
+    return render_template('login.html')
+
+
+@app.route('/logout')
+def logout_page():
+    logout_user()
+    return redirect(url_for('login_page'))
+
+
+@app.route('/match-teacher')
+@login_required
+def match_teacher_page():
+    # Get all teachers who are not yet matched to a user
+    subquery = db.session.query(User.teacher_id).filter(User.teacher_id.isnot(None))
+    query_filter = Teacher.id.notin_(subquery)
+    teachers = Teacher.query.filter(query_filter).all()
+    return render_template('match-teacher.html', teachers=teachers)
+
+
+@app.route('/dashboard')
+@login_required
+def dashboard_page():
+    pass
+
+
+
+#################### APIs ####################
+
+@app.route('/login', methods=['POST'])
+def login():
+    '''API for authenticating via the school's system.'''
+
+    # Get form data, defaults to empty string
+    username = request.form.get('username', '')
+    password = request.form.get('password', '')
+
+    success_flag = False
+    is_new_teacher = False
+
+    if all((username, password)): # Data validation
+        # Try fetching user from database
+        user = User.query.filter_by(school_id=username).first()
+
+        # If user is already in the database, validate credentials directly
+        if user and user.authenticate(password):
+            success_flag = True
+            is_new_teacher = user.is_teacher and user.teacher_id == None
+
+        # New user trying to log in
+        elif not user:
+            # Authenticate via PowerSchool
+            code, name = ykps_auth(username, password)
+
+            if code == 0:
+                # User credentials validated, insert into database
+                hashed_password = generate_password_hash(password)
+                user = User(school_id=username, name=name, password=hashed_password, is_teacher=is_teacher)
+                db.session.add(user)
+                db.session.commit()
+                is_new_teacher = not re.match(r's\d{5}', username)
+                success_flag = True
+
+    if success_flag:
+        # User credentials validated, logs in the user
+        login_user(user)
+
+        if is_new_teacher:
+            # Teacher logs in for the first time, requests teacher's ID
+            return redirect(url_for('match_teacher_page'))
+        else:
+            return redirect(url_for('dashboard_page'))
+    
+    else:
+        return render_template('login.html', login_msg='Incorrect credentials!')
+
+
+@app.route('/match-teacher', methods=['POST'])
+@login_required
+def match_teacher():
+    '''API for matching a teacher user to a teacher.'''
+
+    if not (current_user.is_teacher and current_user.teacher_id == None):
+        # Ensure only the correct users are accessing
+        return redirect(url_for('dashboard_page'))
+
+    # Get form data, defaults to empty string
+    teacher_id = request.form.get('teacher-id', '')
+
+    # Update user's teacher_id field
+    current_user.teacher_id = teacher_id
+    db.session.commit()
+    return redirect(url_for('dashboard_page'))
+
+
+
+#################### Misc Views ####################
+
+@login_manager.unauthorized_handler
+def unauthorized_access():
+    '''Redicts unauthorized users to login page.'''
+    return redirect(url_for('login_page'))

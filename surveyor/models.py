@@ -28,7 +28,7 @@ class Class(db.Model):
         return '<Class {}>'.format(self.name)
 
 
-class User(UserMixin, db.Model):
+class User(db.Model, UserMixin):
     '''Model for the users table.'''
 
     __tablename__ = 'users'
@@ -46,6 +46,11 @@ class User(UserMixin, db.Model):
     def authenticate(self, password):
         '''Checks if provided password matches stored password.'''
         return check_password_hash(self.password, password)
+    
+    @staticmethod
+    @login_manager.user_loader
+    def load_user(user_id):
+        return User.query.get(user_id)
 
 
 class Feedback(db.Model):

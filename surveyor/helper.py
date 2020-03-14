@@ -9,7 +9,7 @@ def ykps_auth(username, password):
     form_data = {
         'account': username,
         'ldappassword': password,
-        'pw': ''
+        'pw': 'surveyor'
     }
 
     try:
@@ -17,8 +17,8 @@ def ykps_auth(username, password):
         soup = BeautifulSoup(req.text, 'html.parser')
         name = soup.select('#userName > span')[0].get_text().strip()
         ret = 0
-    except Exception:
-        name = ''
+    except Exception as e:
+        name = str(e)
         ret = -1
 
     return ret, name
