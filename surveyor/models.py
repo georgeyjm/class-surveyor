@@ -23,6 +23,7 @@ class Class(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(128), nullable=False)
+    teacher_id = db.Column(db.Integer, db.ForeignKey('teachers.id'), nullable=True)
 
     def __repr__(self):
         return '<Class {}>'.format(self.name)
