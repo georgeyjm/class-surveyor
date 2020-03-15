@@ -47,7 +47,10 @@ def match_teacher_page():
 @app.route('/dashboard')
 @login_required
 def dashboard_page():
-    pass
+    if current_user.is_teacher:
+        return render_template('teacher-dashboard.html')
+    else:
+        return render_template('student-dashboard.html')
 
 
 
@@ -81,10 +84,10 @@ def login():
             if code == 0:
                 # User credentials validated, insert into database
                 hashed_password = generate_password_hash(password)
-                user = User(school_id=username, name=name, password=hashed_password, is_teacher=is_teacher)
+                is_new_teacher = not re.match(r's\d{5}', username)
+                user = User(school_id=username, name=name, password=hashed_password, is_teacher=is_new_teacher)
                 db.session.add(user)
                 db.session.commit()
-                is_new_teacher = not re.match(r's\d{5}', username)
                 success_flag = True
 
     if success_flag:
