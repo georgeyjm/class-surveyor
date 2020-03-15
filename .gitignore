@@ -5,5 +5,6 @@ __pycache__
 # Deployment-Related
 instance
 venv
+.vscode
 *.ini
 *.sock
