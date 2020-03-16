@@ -25,10 +25,13 @@ def index_page():
 
 @app.route('/login')
 def login_page():
+    if current_user.is_authenticated:
+        return redirect(url_for('dashboard_page'))
     return render_template('login.html')
 
 
 @app.route('/logout')
+@login_required
 def logout_page():
     logout_user()
     return redirect(url_for('login_page'))
