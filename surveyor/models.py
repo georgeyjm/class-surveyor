@@ -23,6 +23,7 @@ class Class(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(128), nullable=False)
+    teacher_id = db.Column(db.Integer, db.ForeignKey('teachers.id'), nullable=True)
 
     def __repr__(self):
         return '<Class {}>'.format(self.name)
@@ -39,6 +40,8 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(128), nullable=False)
     is_teacher = db.Column(db.Boolean, nullable=False)
     teacher_id = db.Column(db.Integer, db.ForeignKey('teachers.id'), nullable=True)
+
+    teacher = db.relationship(Teacher, backref='users')
 
     def __repr__(self):
         return '<User {}>'.format(self.name)
@@ -64,8 +67,11 @@ class Feedback(db.Model):
     content = db.Column(db.Text, nullable=False)
     is_anonymous = db.Column(db.Boolean, default=False)
 
+    student = db.relationship(User, backref='feedbacks')
+    class_ = db.relationship(Class, backref='feedbacks')
+
     def __repr__(self):
-        return '<Feedback {}>'.format(self.name)
+        return '<Feedback #{}>'.format(self.id)
 
 
 db.create_all() # Initialize tables using the above configuration

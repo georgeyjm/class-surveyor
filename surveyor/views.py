@@ -47,7 +47,12 @@ def match_teacher_page():
 @app.route('/dashboard')
 @login_required
 def dashboard_page():
-    pass
+    if current_user.is_teacher:
+        classes = Class.query.filter_by(teacher_id=current_user.teacher.id).all()
+        return render_template('teacher-dashboard.html', classes=classes)
+    else:
+        feedbacks = Feedback.query.filter_by(student_id=current_user.id).all()
+        return render_template('student-dashboard.html', feedbacks=feedbacks)
 
 
 
@@ -81,10 +86,10 @@ def login():
             if code == 0:
                 # User credentials validated, insert into database
                 hashed_password = generate_password_hash(password)
-                user = User(school_id=username, name=name, password=hashed_password, is_teacher=is_teacher)
+                is_new_teacher = not re.match(r's\d{5}', username)
+                user = User(school_id=username, name=name, password=hashed_password, is_teacher=is_new_teacher)
                 db.session.add(user)
                 db.session.commit()
-                is_new_teacher = not re.match(r's\d{5}', username)
                 success_flag = True
 
     if success_flag:
@@ -113,10 +118,33 @@ def match_teacher():
     # Get form data, defaults to empty string
     teacher_id = request.form.get('teacher-id', '')
 
+    # TODO: Data validation
+
     # Update user's teacher_id field
     current_user.teacher_id = teacher_id
     db.session.commit()
     return redirect(url_for('dashboard_page'))
+
+
+@app.route('/feedback/delete', methods=['POST'])
+@login_required
+def delete_feedback():
+    '''API for deleting a feedback.'''
+
+    if current_user.is_teacher:
+        # Ensure only the correct users are accessing
+        return jsonify({'code': 2})
+
+    # Get form data, defaults to empty string
+    feedback_id = request.form.get('id', '')
+
+    # Validate data and perform deletion in the database
+    feedback = Feedback.query.filter_by(id=feedback_id) # Cannot use get here
+    if not feedback:
+        return jsonify({'code': 1})
+    feedback.delete()
+    db.session.commit()
+    return jsonify({'code': 0})
 
 
 
