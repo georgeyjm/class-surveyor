@@ -117,10 +117,33 @@ def match_teacher():
     # Get form data, defaults to empty string
     teacher_id = request.form.get('teacher-id', '')
 
+    # TODO: Data validation
+
     # Update user's teacher_id field
     current_user.teacher_id = teacher_id
     db.session.commit()
     return redirect(url_for('dashboard_page'))
+
+
+@app.route('/feedback/delete', methods=['POST'])
+@login_required
+def delete_feedback():
+    '''API for deleting a feedback.'''
+
+    if current_user.is_teacher:
+        # Ensure only the correct users are accessing
+        return jsonify({'code': 2})
+
+    # Get form data, defaults to empty string
+    feedback_id = request.form.get('id', '')
+
+    # Validate data and perform deletion in the database
+    feedback = Feedback.query.filter_by(id=feedback_id) # Cannot use get here
+    if not feedback:
+        return jsonify({'code': 1})
+    feedback.delete()
+    db.session.commit()
+    return jsonify({'code': 0})
 
 
 

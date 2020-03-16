@@ -3,10 +3,11 @@
 
 {% block styles %}
   {{ super() }}
-  <link rel='stylesheet' href='{{ url_for("static", filename="styles/dashboard.css") }}'>
+  <link rel='stylesheet' href='{{ url_for("static", filename="styles/student-dashboard.css") }}'>
 {% endblock %}
 {% block scripts %}
   {{ super() }}
+  <script src='{{ url_for("static", filename="scripts/student-dashboard.js") }}'></script>
 {% endblock %}
 
 {% block body %}
@@ -19,13 +20,34 @@
           <div class='card-body'>
             <h5 class='card-title'>{{ feedback.class_.name }}</h5>
             <p class='card-text'>{{ feedback.content }}</p>
-            <div class='card-links-container'>
+            <div class='card-links-container' data-feedback-id='{{ feedback.id }}' data-feedback-class='{{ feedback.class_.name }}'>
               <a href='#' class='card-link text-secondary'><i class='far fa-edit mr-2' aria-hidden='true'></i>Edit</a>
-              <a href='#' class='card-link text-danger'><i class='far fa-trash-alt mr-2' aria-hidden='true'></i>Delete</a>
+              <a href='#' class='card-link text-danger' data-toggle='modal' data-target='#delete-feedback-confirm-modal'><i class='far fa-trash-alt mr-2' aria-hidden='true'></i>Delete</a>
             </div>
           </div>
         </div>
       {% endfor %}
     </div>
+
+    <div class='modal fade' id='delete-feedback-confirm-modal' tabindex='-1' role='dialog' aria-labelledby='delete-feedback-confirm-label' aria-hidden='true'>
+      <div class='modal-dialog' role='document'>
+        <div class='modal-content'>
+          <div class='modal-header'>
+            <h5 class='modal-title' id='delete-feedback-confirm-label'>Delete Feedback</h5>
+            <button type='button' class='close' data-dismiss='modal' aria-label='Close'>
+              <span aria-hidden='true'>&times;</span>
+            </button>
+          </div>
+          <div class='modal-body'>
+            Hello there.
+          </div>
+          <div class='modal-footer'>
+            <button type='button' class='btn btn-outline-secondary' data-dismiss='modal'>Cancel</button>
+            <button type='button' id='confirm-delete-feedback-button' class='btn btn-danger'>Delete</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 {% endblock %}
