@@ -55,6 +55,20 @@ def dashboard_page():
         return render_template('student-dashboard.html', feedbacks=feedbacks)
 
 
+@app.route('/feedback/new')
+@login_required
+def new_feedback_page():
+    if current_user.is_teacher:
+        # Ensure only the correct users are accessing
+        return redirect(url_for('dashboard_page'))
+    
+    # Get all classes which the student has no feedback in
+    subquery = db.session.query(Feedback.class_id).filter(Feedback.student_id == current_user.id)
+    query_filter = Class.id.notin_(subquery)
+    classes = Class.query.filter(query_filter).all()
+    return render_template('new-feedback.html', classes=classes)
+
+
 
 #################### APIs ####################
 
@@ -138,6 +152,8 @@ def delete_feedback():
     # Get form data, defaults to empty string
     feedback_id = request.form.get('id', '')
 
+    # TODO: Data validation
+
     # Validate data and perform deletion in the database
     feedback = Feedback.query.filter_by(id=feedback_id) # Cannot use get here
     if not feedback:
@@ -145,6 +161,31 @@ def delete_feedback():
     feedback.delete()
     db.session.commit()
     return jsonify({'code': 0})
+
+
+@app.route('/feedback/new', methods=['POST'])
+@login_required
+def new_feedback():
+    '''API for creating a new feedback.'''
+
+    if current_user.is_teacher:
+        # Ensure only the correct users are accessing
+        return render_template(url_for('new_feedback_page'))
+    
+    feedback_class_id = request.form.get('feedback-class', '')
+    feedback_content = request.form.get('feedback-content', '')
+    feedback_anonymous = request.form.get('feedback-anonymous', 'off')
+
+    # TODO: Data validation
+
+    feedback_anonymous = True if feedback_anonymous == 'on' else False
+
+    # Performs database insertion
+    feedback = Feedback(student_id=current_user.id, class_id=feedback_class_id, content=feedback_content, is_anonymous=feedback_anonymous)
+    db.session.add(feedback)
+    db.session.commit()
+
+    return render_template(url_for('dashboard_page'))
 
 
 

@@ -5,3 +5,23 @@ body {
 h1 {
     font-weight: bold;
 }
+
+
+.head-back-button {
+    margin-top: -1.5rem;
+}
+
+/* .anonymous-check-box {
+    display:none;
+}
+
+.anonymous-check-box + label:before {
+    font-family: FontAwesome;
+    display: inline-block;
+    margin-right: 1.25rem;
+    content: '\f21b';
+}
+
+.anonymous-check-box:checked + label:before {
+    content: '\f21b';
+} */

@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block title %}New Feedback{% endblock %}
+
+{% block styles %}
+  {{ super() }}
+  <link rel='stylesheet' href='{{ url_for("static", filename="styles/teacher-dashboard.css") }}'>
+{% endblock %}
+{% block scripts %}
+  {{ super() }}
+  <script src='{{ url_for("static", filename="scripts/teacher-dashboard.js") }}'></script>
+{% endblock %}
+
+{% block body %}
+  <div id='dashboard-container'>
+    <div>
+      <a href='/dashboard' class='head-back-button position-absolute text-secondary'><i class='far fa-angle-left mr-1' aria-hidden='true'></i>Dashboard</a>
+      <h1 class='mb-3'>New Feedback</h1>
+    </div>
+
+    <form action='' method='POST' class='row mt-4'>
+      <div class='col-12 col-md-10 col-lg-8 col-xl-6'>
+        <div class='form-group'>
+          <label for='feedback-class-choice'><strong>Class</strong></label>
+          <select class='form-control' name='feedback-class' id='feedback-class-choice'>
+            {% for class in classes %}
+              <option value='{{ class.id }}'>{{ class.name }} ({{ class.teacher.name }})</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class='form-group'>
+          <label for='feedback-content-input'><strong>Feedback</strong></label>
+          <textarea class='form-control' name='feedback-content' id='feedback-content-input' rows='6'></textarea>
+        </div>
+        <div class='form-group'>
+          <div class='form-check'>
+            <input class='form-check-input anonymous-check-box far' type='checkbox' name='feedback-anonymous' id='gridCheck'>
+            <label class='form-check-label' for='gridCheck'>Make this feedback anonymous</label>
+          </div>
+        </div>
+        <div class='mt-4'>
+          <button type='submit' class='btn btn-primary'>Submit Feedback</button>
+        </div>
+      </div>
+    </form>
+
+  </div>
+{% endblock %}
