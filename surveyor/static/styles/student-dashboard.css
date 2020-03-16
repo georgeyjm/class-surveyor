@@ -12,12 +12,7 @@
     box-shadow: 3px 3px 6px 0px rgba(0, 0, 0, 0.08);
 }
 
-.feedback .card-title {
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-}
-
+.feedback .card-title,
 .feedback .card-text {
     overflow: hidden;
     display: -webkit-box;
