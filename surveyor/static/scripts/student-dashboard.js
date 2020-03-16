@@ -1,8 +1,8 @@
-$('#delete-feedback-confirm-modal').on('show.bs.modal', event => {
+$('#delete-feedback-confirm-modal').on('show.bs.modal', function(event) {
     let feedbackData = $(event.relatedTarget).parent();
     let feedbackId = feedbackData.data('feedback-id');
     let feedbackClass = feedbackData.data('feedback-class');
-    let modal = $('#delete-feedback-confirm-modal');
+    let modal = $(this);
     modal.find('.modal-body').html(`Are you sure you want to delete the feedback for the class <strong>&ldquo;${feedbackClass}&rdquo;</strong>? You can&rsquo;t undo this action.`);
     modal.find('#confirm-delete-feedback-button').data('feedback-id', feedbackId);
 });
