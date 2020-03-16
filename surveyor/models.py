@@ -66,7 +66,7 @@ class Feedback(db.Model):
     is_anonymous = db.Column(db.Boolean, default=False)
 
     def __repr__(self):
-        return '<Feedback {}>'.format(self.name)
+        return '<Feedback #{}>'.format(self.id)
 
 
 db.create_all() # Initialize tables using the above configuration
