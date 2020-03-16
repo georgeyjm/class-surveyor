@@ -50,7 +50,8 @@ def dashboard_page():
     if current_user.is_teacher:
         return render_template('teacher-dashboard.html')
     else:
-        return render_template('student-dashboard.html')
+        feedbacks = Feedback.query.filter_by(student_id=current_user.id).all()
+        return render_template('student-dashboard.html', feedbacks=feedbacks)
 
 
 
