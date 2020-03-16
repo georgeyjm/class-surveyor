@@ -3,28 +3,25 @@
 }
 
 .feedback {
-    height: 238px;
     vertical-align: top;
-    box-shadow: 6px 6px 16px 0px rgba(0, 0, 0, 0.06);
+    box-shadow: 8px 8px 16px 0px rgba(0, 0, 0, 0.04);
     transition: box-shadow 150ms ease;
 }
 
 .feedback:hover {
-    box-shadow: 10px 10px 20px 0px rgba(0, 0, 0, 0.04)
+    box-shadow: 3px 3px 6px 0px rgba(0, 0, 0, 0.08);
 }
 
 .feedback .card-title {
     overflow: hidden;
     display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;  
+    -webkit-box-orient: vertical;
 }
 
 .feedback .card-text {
     overflow: hidden;
     display: -webkit-box;
-    -webkit-line-clamp: 4;
-    -webkit-box-orient: vertical;  
+    -webkit-box-orient: vertical;
 }
 
 .feedback .card-links-container {
@@ -43,40 +40,59 @@
 
 .feedback {
     width: 100%;
+    height: 162px;
 }
 
-/* Small Devices */
-@media (min-width: 576px) {
+.feedback .card-title {
+    -webkit-line-clamp: 1;
+}
 
+.feedback .card-text {
+    -webkit-line-clamp: 2;
 }
 
 /* Medium Devices */
+
 @media (min-width: 768px) {
-    
+
     .feedback {
         width: calc(50% - 0.8672rem);
+        height: 208px;
     }
 
     .feedback:not(:nth-child(2n)) {
         margin-right: 1.5rem;
     }
 
+    .feedback .card-title {
+        -webkit-line-clamp: 2;
+    }
+
+    .feedback .card-text {
+        -webkit-line-clamp: 3;
+    }
+
 }
 
 /* Large Devices */
+
 @media (min-width: 992px) {
 
     .feedback {
         width: calc(25% - 1.3018rem);
+        height: 232px;
     }
 
     .feedback:not(:nth-child(4n)) {
         margin-right: 1.5rem;
     }
 
-}
-
-/* Extra Large Devices */
-@media (min-width: 1200px) {
+    .feedback .card-title {
+        -webkit-line-clamp: 2;
+    }
+    
+    .feedback .card-text {
+        -webkit-line-clamp: 4;
+    }
 
 }
