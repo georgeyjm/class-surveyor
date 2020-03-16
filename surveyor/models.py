@@ -65,6 +65,8 @@ class Feedback(db.Model):
     content = db.Column(db.Text, nullable=False)
     is_anonymous = db.Column(db.Boolean, default=False)
 
+    class_ = db.relationship(Class, backref='feedbacks')
+
     def __repr__(self):
         return '<Feedback #{}>'.format(self.id)
 
