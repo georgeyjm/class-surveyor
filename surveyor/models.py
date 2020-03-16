@@ -25,6 +25,8 @@ class Class(db.Model):
     name = db.Column(db.String(128), nullable=False)
     teacher_id = db.Column(db.Integer, db.ForeignKey('teachers.id'), nullable=True)
 
+    teacher = db.relationship(Teacher, backref='classes')
+
     def __repr__(self):
         return '<Class {}>'.format(self.name)
 

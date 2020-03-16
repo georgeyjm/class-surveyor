@@ -15,7 +15,7 @@
     <p class='text-center'><strong>Please select your name from the list below.</strong></p>
     <form action='' method='POST'>
       <div class='col-lg-4 offset-lg-4 col-md-6 offset-md-3 col-sm-10 offset-sm-1'>
-        <select class='custom-select' name='teacher-id'>
+        <select class='form-control' name='teacher-id'>
           {% for teacher in teachers %}
             <option value='{{ teacher.id }}'>{{ teacher.name }}</option>
           {% endfor %}
