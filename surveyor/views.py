@@ -25,10 +25,13 @@ def index_page():
 
 @app.route('/login')
 def login_page():
+    if current_user.is_authenticated:
+        return redirect(url_for('dashboard_page'))
     return render_template('login.html')
 
 
 @app.route('/logout')
+@login_required
 def logout_page():
     logout_user()
     return redirect(url_for('login_page'))
@@ -37,6 +40,10 @@ def logout_page():
 @app.route('/match-teacher')
 @login_required
 def match_teacher_page():
+    if not (current_user.is_teacher and current_user.teacher_id == None):
+        # Ensure only the correct users are accessing
+        return redirect(url_for('dashboard_page'))
+        
     # Get all teachers who are not yet matched to a user
     subquery = db.session.query(User.teacher_id).filter(User.teacher_id.isnot(None))
     query_filter = Teacher.id.notin_(subquery)
