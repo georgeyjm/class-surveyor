@@ -66,6 +66,11 @@ def new_feedback_page():
     subquery = db.session.query(Feedback.class_id).filter(Feedback.student_id == current_user.id)
     query_filter = Class.id.notin_(subquery)
     classes = Class.query.filter(query_filter).all()
+    if not classes:
+        # No class left to give feedback
+        # TODO: Notify the user about this
+        return redirect(url_for('dashboard_page'))
+
     return render_template('new-feedback.html', classes=classes)
 
 
@@ -185,7 +190,7 @@ def new_feedback():
     db.session.add(feedback)
     db.session.commit()
 
-    return render_template(url_for('dashboard_page'))
+    return redirect(url_for('dashboard_page'))
 
 
 
