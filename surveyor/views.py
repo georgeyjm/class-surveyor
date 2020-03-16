@@ -48,7 +48,8 @@ def match_teacher_page():
 @login_required
 def dashboard_page():
     if current_user.is_teacher:
-        return render_template('teacher-dashboard.html')
+        classes = Class.query.filter_by(teacher_id=current_user.teacher.id).all()
+        return render_template('teacher-dashboard.html', classes=classes)
     else:
         feedbacks = Feedback.query.filter_by(student_id=current_user.id).all()
         return render_template('student-dashboard.html', feedbacks=feedbacks)
