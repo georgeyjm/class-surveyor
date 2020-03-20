@@ -81,6 +81,27 @@ def new_feedback_page():
     return render_template('new-feedback.html', classes=classes)
 
 
+@app.route('/feedback/edit/<feedback_id>')
+@login_required
+def edit_feedback_page(feedback_id):
+    if current_user.is_teacher:
+        # Ensure only the correct users are accessing
+        return redirect(url_for('dashboard_page'))
+    
+    feedback = Feedback.query.get(feedback_id)
+
+    if not feedback or feedback.student_id != current_user.id:
+        # Data validation and authentication
+        return redirect(url_for('dashboard_page'))
+    
+    # Get all classes which the student has no feedback in
+    subquery = db.session.query(Feedback.class_id).filter(Feedback.student_id == current_user.id)
+    query_filter = Class.id.notin_(subquery)
+    classes = Class.query.filter(query_filter).all()
+
+    return render_template('edit-feedback.html', current=feedback, classes=classes)
+
+
 
 #################### APIs ####################
 
