@@ -8,8 +8,8 @@ from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.security import generate_password_hash
 
 from . import app, db, login_manager
-from .models import *
-from .helper import *
+from .models import Teacher, Class, User, Feedback
+from .helper import ykps_auth
 
 
 
@@ -79,6 +79,27 @@ def new_feedback_page():
         return redirect(url_for('dashboard_page'))
 
     return render_template('new-feedback.html', classes=classes)
+
+
+@app.route('/feedback/edit/<feedback_id>')
+@login_required
+def edit_feedback_page(feedback_id):
+    if current_user.is_teacher:
+        # Ensure only the correct users are accessing
+        return redirect(url_for('dashboard_page'))
+    
+    feedback = Feedback.query.get(feedback_id)
+
+    if not feedback or feedback.student_id != current_user.id:
+        # Data validation and authentication
+        return redirect(url_for('dashboard_page'))
+    
+    # Get all classes which the student has no feedback in
+    subquery = db.session.query(Feedback.class_id).filter(Feedback.student_id == current_user.id)
+    query_filter = Class.id.notin_(subquery)
+    classes = Class.query.filter(query_filter).all()
+
+    return render_template('edit-feedback.html', current=feedback, classes=classes)
 
 
 
@@ -195,6 +216,35 @@ def new_feedback():
     # Performs database insertion
     feedback = Feedback(student_id=current_user.id, class_id=feedback_class_id, content=feedback_content, is_anonymous=feedback_anonymous)
     db.session.add(feedback)
+    db.session.commit()
+
+    return redirect(url_for('dashboard_page'))
+
+
+@app.route('/feedback/edit/<feedback_id>', methods=['POST'])
+@login_required
+def edit_feedback(feedback_id):
+    if current_user.is_teacher:
+        # Ensure only the correct users are accessing
+        return redirect(url_for('dashboard_page'))
+    
+    feedback = Feedback.query.get(feedback_id)
+    feedback_class_id = request.form.get('feedback-class', '')
+    feedback_content = request.form.get('feedback-content', '')
+    feedback_anonymous = request.form.get('feedback-anonymous', 'off')
+
+    # TODO: Data validation
+
+    if not feedback or feedback.student_id != current_user.id:
+        # Data validation and authentication
+        return redirect(url_for('dashboard_page'))
+    
+    feedback_anonymous = True if feedback_anonymous == 'on' else False
+
+    # Update feedback
+    feedback.class_id = feedback_class_id
+    feedback.content = feedback_content
+    feedback.is_anonymous = feedback_anonymous
     db.session.commit()
 
     return redirect(url_for('dashboard_page'))
