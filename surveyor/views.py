@@ -221,6 +221,35 @@ def new_feedback():
     return redirect(url_for('dashboard_page'))
 
 
+@app.route('/feedback/edit/<feedback_id>', methods=['POST'])
+@login_required
+def edit_feedback(feedback_id):
+    if current_user.is_teacher:
+        # Ensure only the correct users are accessing
+        return redirect(url_for('dashboard_page'))
+    
+    feedback = Feedback.query.get(feedback_id)
+    feedback_class_id = request.form.get('feedback-class', '')
+    feedback_content = request.form.get('feedback-content', '')
+    feedback_anonymous = request.form.get('feedback-anonymous', 'off')
+
+    # TODO: Data validation
+
+    if not feedback or feedback.student_id != current_user.id:
+        # Data validation and authentication
+        return redirect(url_for('dashboard_page'))
+    
+    feedback_anonymous = True if feedback_anonymous == 'on' else False
+
+    # Update feedback
+    feedback.class_id = feedback_class_id
+    feedback.content = feedback_content
+    feedback.is_anonymous = feedback_anonymous
+    db.session.commit()
+
+    return redirect(url_for('dashboard_page'))
+
+
 
 #################### Misc Views ####################
 
