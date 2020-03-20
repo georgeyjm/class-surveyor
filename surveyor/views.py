@@ -8,8 +8,8 @@ from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.security import generate_password_hash
 
 from . import app, db, login_manager
-from .models import *
-from .helper import *
+from .models import Teacher, Class, User, Feedback
+from .helper import ykps_auth
 
 
 
