@@ -7,9 +7,55 @@ h1 {
 }
 
 
+.main-content-container {
+    margin-top: 100px;
+}
+
 .head-back-button {
     margin-top: -1.5rem;
 }
+
+/* Feedback Cards */
+
+.feedback {
+    vertical-align: top;
+    box-shadow: 8px 8px 16px 0px rgba(0, 0, 0, 0.04);
+    transition: box-shadow 150ms ease;
+}
+
+.feedback:hover {
+    box-shadow: 3px 3px 6px 0px rgba(0, 0, 0, 0.08);
+}
+
+.feedback .card-title,
+.feedback .card-text {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+}
+
+.feedback .card-links-container {
+    position: absolute;
+    bottom: 1rem;
+    opacity: 0;
+    transition: opacity 150ms ease;
+}
+
+.feedback:hover .card-links-container {
+    opacity: 1;
+}
+
+.feedback .blockquote {
+    font-size: 1rem;
+}
+
+.feedback .blockquote-body,
+.feedback .blockquote-footer {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+}
+
 
 /* .anonymous-check-box {
     display:none;
