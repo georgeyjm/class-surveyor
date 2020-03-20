@@ -3,15 +3,14 @@
 
 {% block styles %}
   {{ super() }}
-  <link rel='stylesheet' href='{{ url_for("static", filename="styles/teacher-dashboard.css") }}'>
+  <link rel='stylesheet' href='{{ url_for("static", filename="styles/feedback.css") }}'>
 {% endblock %}
 {% block scripts %}
   {{ super() }}
-  <script src='{{ url_for("static", filename="scripts/teacher-dashboard.js") }}'></script>
 {% endblock %}
 
 {% block body %}
-  <div id='dashboard-container'>
+  <div id='editor-container'>
     <div>
       <a href='/dashboard' class='head-back-button position-absolute text-secondary'><i class='far fa-angle-left mr-1' aria-hidden='true'></i>Dashboard</a>
       <h1 class='mb-3'>New Feedback</h1>
