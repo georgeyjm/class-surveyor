@@ -1,4 +1,4 @@
-# Class Surveyer
+# Class Surveyor
 
 > *Class Surveyor* is a platform for students to openly, freely and effectively express their feedbacks for their classes to the teachers.
 
