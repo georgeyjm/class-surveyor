@@ -6,7 +6,7 @@ from functools import wraps
 from flask import Response, request, render_template, send_file, redirect, url_for, jsonify
 from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.security import generate_password_hash
-from pandas import read_sql
+import pandas as pd
 
 from . import app, db, login_manager
 from .models import Teacher, Class, User, Feedback
@@ -283,9 +283,26 @@ def export_feedback():
         # TODO: Notify user about this
         return redirect(url_for('export_feedback_page'))
     
-    df = read_sql(Feedback.query.filter(Feedback.class_id.in_(classes)).statement, db.session.bind)
+    # Get all requested feedbacks
+    df = pd.read_sql(
+        db.session.query(
+            Feedback.class_id,
+            Feedback.student_id,
+            Feedback.content.label('Content'),
+            Feedback.is_anonymous
+        ).filter(Feedback.class_id.in_(classes)).order_by(Feedback.class_id).statement,
+        db.session.bind
+    )
+    # Get the file path and filename
     filepath, filename = get_export_file(export_format)
+
+    # Process data frame
+    df['Class'] = df.apply(lambda row: Class.query.get(row['class_id']).name, axis=1)
+    df['Student'] = df.apply(lambda row: 'Anonymous' if row['is_anonymous'] else User.query.get(row['student_id']).name, axis=1)
+    df.drop(columns=['class_id', 'student_id', 'is_anonymous'], inplace=True) # Drop columns
+    df = df[['Class', 'Student', 'Content']] # Reorder columns
     
+    # Export data frame to file
     if export_format == 'excel':
         df.to_excel(filepath, sheet_name='Feedbacks', index=False)
     elif export_format == 'csv':
