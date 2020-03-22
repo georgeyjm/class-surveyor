@@ -1,7 +1,6 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
-from flask_caching import Cache
 
 from config import app_config
 
@@ -15,9 +14,6 @@ app.config.from_pyfile('secrets.py')
 db = SQLAlchemy()
 db.app = app # Necessary for db.create_all()
 db.init_app(app)
-
-cache = Cache(config={'CACHE_TYPE': 'simple'})
-cache.init_app(app)
 
 login_manager = LoginManager()
 login_manager.init_app(app)
