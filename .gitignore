@@ -4,6 +4,7 @@ __pycache__
 
 # Deployment-Related
 instance
+exports
 venv
 .vscode
 *.ini

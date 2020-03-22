@@ -11,9 +11,9 @@
 {% endblock %}
 
 {% block body %}
-  <div id='dashboard-container'>
+  <div class='main-content-container'>
     <h1 class='mb-3'>Dashboard</h1>
-    <!-- <a href='/class/manage' class='btn btn-outline-primary' role='button'><i class='far fa-edit mr-2' aria-hidden='true'></i>Manage My Classes</a> -->
+    <a href='/feedback/export' class='btn btn-outline-primary' role='button'><i class='far fa-file-export mr-2' aria-hidden='true'></i>Export Feedbacks</a>
     <div class='mt-5'>
       {% for class in classes %}
         <h3 class='mt-4'>{{ class.name }}</h3>
