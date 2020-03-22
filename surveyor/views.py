@@ -3,13 +3,14 @@ import sys
 import traceback
 from functools import wraps
 
-from flask import Response, request, render_template, redirect, url_for, jsonify
+from flask import Response, request, render_template, send_file, redirect, url_for, jsonify
 from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.security import generate_password_hash
+from pandas import read_sql
 
 from . import app, db, login_manager
 from .models import Teacher, Class, User, Feedback
-from .helper import ykps_auth
+from .helper import ykps_auth, get_export_file
 
 
 
@@ -100,6 +101,23 @@ def edit_feedback_page(feedback_id):
     classes = Class.query.filter(query_filter).all()
 
     return render_template('edit-feedback.html', current=feedback, classes=classes)
+
+
+@app.route('/feedback/export')
+@login_required
+def export_feedback_page():
+    if not current_user.is_teacher:
+        # Ensure only the correct users are accessing
+        return redirect(url_for('dashboard_page'))
+    
+    classes = Class.query.filter_by(teacher_id=current_user.teacher.id).all()
+
+    if not classes:
+        # No class left to give feedback
+        # TODO: Notify the user about this
+        return redirect(url_for('dashboard_page'))
+
+    return render_template('export-feedback.html', classes=classes)
 
 
 
@@ -248,6 +266,33 @@ def edit_feedback(feedback_id):
     db.session.commit()
 
     return redirect(url_for('dashboard_page'))
+
+
+@app.route('/feedback/export', methods=['POST'])
+@login_required
+def export_feedback():
+    if not current_user.is_teacher:
+        # Ensure only the correct users are accessing
+        return redirect(url_for('dashboard_page'))
+
+    classes = request.form.getlist('classes')
+    export_format = request.form.get('export-format', '')
+
+    if not classes or not export_format in ('excel', 'csv'):
+        # No classes selected or incorrect format
+        # TODO: Notify user about this
+        return redirect(url_for('export_feedback_page'))
+    
+    df = read_sql(Feedback.query.filter(Feedback.class_id.in_(classes)).statement, db.session.bind)
+    filepath, filename = get_export_file(export_format)
+    
+    if export_format == 'excel':
+        df.to_excel(filepath, sheet_name='Feedbacks', index=False)
+    elif export_format == 'csv':
+        with open(filepath, 'w', encoding='utf-8') as f:
+            df.to_csv(f, index=False)
+
+    return send_file(filepath, as_attachment=True, attachment_filename=filename)
 
 
 
