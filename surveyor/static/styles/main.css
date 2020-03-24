@@ -45,12 +45,12 @@ h1 {
     opacity: 1;
 }
 
-.feedback .blockquote {
+.feedback-content.blockquote {
     font-size: 1rem;
 }
 
-.feedback .blockquote-body,
-.feedback .blockquote-footer {
+.feedback-content.blockquote .blockquote-body,
+.feedback-content.blockquote .blockquote-footer {
     overflow: hidden;
     display: -webkit-box;
     -webkit-box-orient: vertical;
