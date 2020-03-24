@@ -22,7 +22,7 @@
           {% for feedback in class.feedbacks %}
             <div class='feedback card d-inline-block mb-4'>
               <div class='card-body'>
-                <blockquote class='blockquote mb-0'>
+                <blockquote class='feedback-content blockquote mb-0'>
                   <p class='blockquote-body'>{{ feedback.content }}</p>
                   {% if not feedback.is_anonymous %}
                     <footer class='blockquote-footer'>{{ feedback.student.name }}</footer>
@@ -47,7 +47,7 @@
             </button>
           </div>
           <div class='modal-body'>
-            <blockquote class='blockquote mb-0'>
+            <blockquote class='feedback-content blockquote mb-0'>
               <p class='blockquote-body'></p>
               <footer class='blockquote-footer'></footer>
             </blockquote>

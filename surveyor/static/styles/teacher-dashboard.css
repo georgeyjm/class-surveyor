@@ -6,11 +6,11 @@
     cursor: pointer;
 }
 
-.feedback .blockquote-body {
+.feedback-content.blockquote .blockquote-body {
     -webkit-line-clamp: 3;
 }
 
-.feedback .blockquote-footer {
+.feedback-content.blockquote .blockquote-footer {
     -webkit-line-clamp: 1;
 }
 
